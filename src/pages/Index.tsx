@@ -1,30 +1,80 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Navigation, { TabType } from "@/components/Navigation";
 import FaceManager from "@/components/FaceManager";
 import GeneratorPanel from "@/components/GeneratorPanel";
 import PricingCard from "@/components/PricingCard";
 import SecurityBanner from "@/components/SecurityBanner";
+import LoadingScreen from "@/components/LoadingScreen";
+import EmailGate from "@/components/EmailGate";
+import PartnerMarquee from "@/components/PartnerMarquee";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 
 const Index = () => {
   const [credits, setCredits] = useState(8000);
   const [activeTab, setActiveTab] = useState<TabType>("video");
+  const [currentLang, setCurrentLang] = useState("fr");
+  
+  // App states
+  const [isLoading, setIsLoading] = useState(true);
+  const [showEmailGate, setShowEmailGate] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Check if user already entered email
+    const savedEmail = localStorage.getItem('kpogo_user_email');
+    if (savedEmail) {
+      setUserEmail(savedEmail);
+    }
+  }, []);
+
+  const handleLoadingComplete = () => {
+    setIsLoading(false);
+    if (!userEmail) {
+      setShowEmailGate(true);
+    }
+  };
+
+  const handleEmailSubmit = (email: string) => {
+    localStorage.setItem('kpogo_user_email', email);
+    setUserEmail(email);
+    setShowEmailGate(false);
+    toast.success("Bienvenue dans la Forge !", {
+      description: "Votre accès a été activé.",
+    });
+  };
+
+  const handleLanguageChange = (code: string) => {
+    setCurrentLang(code);
+    toast.info(`Langue: ${code.toUpperCase()}`, {
+      description: "Traduction en cours d'intégration",
+    });
+  };
 
   const handleGenerate = (cost: number) => {
     setCredits(prev => Math.max(0, prev - cost));
     toast.success("Génération terminée !", {
-      description: `${cost} crédits utilisés. Sortie 'Ghost' prête.`,
+      description: `${cost} crédits utilisés. Fichier prêt.`,
     });
   };
 
   const handlePurchase = () => {
-    toast.info("Redirection vers FedaPay...", {
+    toast.info("Redirection vers le paiement...", {
       description: "Paiement sécurisé par Mobile Money ou Carte Bancaire",
     });
-    // Would redirect to FedaPay
+    // Would redirect to payment gateway
   };
+
+  // Loading Screen
+  if (isLoading) {
+    return <LoadingScreen onComplete={handleLoadingComplete} />;
+  }
+
+  // Email Gate
+  if (showEmailGate) {
+    return <EmailGate onSubmit={handleEmailSubmit} />;
+  }
 
   return (
     <div className="min-h-screen">
@@ -39,8 +89,12 @@ const Index = () => {
         }}
       />
       
-      {/* Header with Credits */}
-      <Header credits={credits} />
+      {/* Header with Credits & Language */}
+      <Header 
+        credits={credits} 
+        currentLang={currentLang}
+        onLanguageChange={handleLanguageChange}
+      />
       
       {/* Main Content */}
       <main className="pt-16">
@@ -99,14 +153,17 @@ const Index = () => {
           </div>
         </div>
         
+        {/* Partner Marquee */}
+        <PartnerMarquee />
+        
         {/* Footer */}
-        <footer className="border-t border-border/30 py-8 mt-12">
+        <footer className="border-t border-border/30 py-8">
           <div className="container mx-auto px-4 text-center">
             <p className="text-sm text-muted-foreground">
               © 2024 KPOGO — Infrastructure IA de Production Élite
             </p>
             <p className="text-xs text-muted-foreground/60 mt-2">
-              Paiements sécurisés par FedaPay • API RunPod & Supabase
+              Développé par l'équipe KPOGO • Paiements sécurisés
             </p>
           </div>
         </footer>

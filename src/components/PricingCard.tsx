@@ -28,7 +28,7 @@ const PricingCard = ({ onPurchase }: PricingCardProps) => {
       {/* Price */}
       <div className="text-center mb-6">
         <div className="flex items-baseline justify-center gap-1">
-          <span className="font-display text-5xl font-bold gold-text">200</span>
+          <span className="font-display text-5xl font-bold gold-text">199,99</span>
           <span className="text-2xl text-primary">€</span>
         </div>
         <p className="text-lg text-secondary-foreground mt-2">
@@ -57,7 +57,7 @@ const PricingCard = ({ onPurchase }: PricingCardProps) => {
         className="btn-luxury w-full flex items-center justify-center gap-2"
       >
         <CreditCard className="w-5 h-5" />
-        Acheter via FedaPay
+        Acheter Maintenant
       </button>
 
       {/* Payment Info */}

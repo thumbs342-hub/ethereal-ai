@@ -364,4 +364,138 @@
   ::-webkit-scrollbar-thumb:hover {
     background: hsl(43 67% 53% / 0.5);
   }
+
+  /* Gold Particles */
+  .particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: radial-gradient(circle, hsl(43 70% 65%) 0%, hsl(43 67% 53% / 0.5) 50%, transparent 100%);
+    border-radius: 50%;
+    animation: particleFloat 4s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes particleFloat {
+    0%, 100% {
+      transform: translateY(0) translateX(0) scale(1);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    50% {
+      transform: translateY(-100px) translateX(30px) scale(0.5);
+      opacity: 0.8;
+    }
+    90% {
+      opacity: 0.3;
+    }
+  }
+
+  /* Smoke/Mist Layers */
+  .smoke-layer {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, hsl(43 67% 53% / 0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .smoke-1 {
+    animation: smokeDrift 8s ease-in-out infinite;
+  }
+
+  .smoke-2 {
+    animation: smokeDrift 12s ease-in-out infinite reverse;
+    opacity: 0.5;
+  }
+
+  .smoke-3 {
+    animation: smokeDrift 10s ease-in-out infinite;
+    animation-delay: -3s;
+    opacity: 0.3;
+  }
+
+  @keyframes smokeDrift {
+    0%, 100% {
+      transform: scale(1) translate(0, 0);
+      opacity: 0.3;
+    }
+    25% {
+      transform: scale(1.1) translate(20px, -10px);
+      opacity: 0.5;
+    }
+    50% {
+      transform: scale(1.2) translate(-10px, 20px);
+      opacity: 0.4;
+    }
+    75% {
+      transform: scale(1.05) translate(-20px, -20px);
+      opacity: 0.6;
+    }
+  }
+
+  /* Loading Scan Line */
+  .loading-scan-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, hsl(43 67% 53%), transparent);
+    animation: loadingScan 2s linear infinite;
+  }
+
+  @keyframes loadingScan {
+    0% {
+      top: 0;
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      top: 100%;
+      opacity: 0;
+    }
+  }
+
+  /* Radial Gradient Background */
+  .bg-gradient-radial {
+    background: radial-gradient(ellipse at center, var(--tw-gradient-from) 0%, var(--tw-gradient-via) 50%, var(--tw-gradient-to) 100%);
+  }
+
+  /* Partner Marquee */
+  .marquee-container {
+    display: flex;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .marquee-content {
+    display: flex;
+    animation: marqueeScroll 30s linear infinite;
+  }
+
+  @keyframes marqueeScroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-33.33%);
+    }
+  }
+
+  /* Gold Gradient for Logo */
+  .bg-gold-gradient {
+    background: linear-gradient(
+      135deg,
+      hsl(43 70% 65%) 0%,
+      hsl(43 67% 53%) 50%,
+      hsl(43 60% 40%) 100%
+    );
+  }
 }
