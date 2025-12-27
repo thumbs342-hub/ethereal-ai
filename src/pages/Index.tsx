@@ -10,6 +10,7 @@ import EmailGate from "@/components/EmailGate";
 import PartnerMarquee from "@/components/PartnerMarquee";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
+import logoKpogo from "@/assets/logo_kpogo.png";
 
 const Index = () => {
   const [credits, setCredits] = useState(8000);
@@ -68,12 +69,12 @@ const Index = () => {
 
   // Loading Screen
   if (isLoading) {
-    return <LoadingScreen onComplete={handleLoadingComplete} />;
+    return <LoadingScreen onComplete={handleLoadingComplete} logoUrl={logoKpogo} />;
   }
 
   // Email Gate
   if (showEmailGate) {
-    return <EmailGate onSubmit={handleEmailSubmit} />;
+    return <EmailGate onSubmit={handleEmailSubmit} logoUrl={logoKpogo} />;
   }
 
   return (
@@ -94,6 +95,7 @@ const Index = () => {
         credits={credits} 
         currentLang={currentLang}
         onLanguageChange={handleLanguageChange}
+        logoUrl={logoKpogo}
       />
       
       {/* Main Content */}
