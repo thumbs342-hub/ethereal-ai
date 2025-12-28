@@ -28,6 +28,11 @@ const Index = () => {
     if (savedEmail) {
       setUserEmail(savedEmail);
     }
+    // Check saved language
+    const savedLang = localStorage.getItem('kpogo_lang');
+    if (savedLang) {
+      setCurrentLang(savedLang);
+    }
   }, []);
 
   const handleLoadingComplete = () => {
@@ -41,15 +46,25 @@ const Index = () => {
     localStorage.setItem('kpogo_user_email', email);
     setUserEmail(email);
     setShowEmailGate(false);
-    toast.success("Bienvenue dans la Forge !", {
+    toast.success("Bienvenue dans la Golden Identity Forge !", {
       description: "Votre accès a été activé.",
     });
   };
 
   const handleLanguageChange = (code: string) => {
     setCurrentLang(code);
+    localStorage.setItem('kpogo_lang', code);
     toast.info(`Langue: ${code.toUpperCase()}`, {
-      description: "Traduction en cours d'intégration",
+      description: "Interface mise à jour",
+    });
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('kpogo_user_email');
+    setUserEmail(null);
+    setShowEmailGate(true);
+    toast.info("Déconnexion réussie", {
+      description: "À bientôt dans la Forge !",
     });
   };
 
@@ -61,8 +76,8 @@ const Index = () => {
   };
 
   const handlePurchase = () => {
-    toast.info("Redirection vers le paiement...", {
-      description: "Paiement sécurisé par Mobile Money ou Carte Bancaire",
+    toast.info("Validation de la Forge en cours...", {
+      description: "Sécurisation de l'Accès",
     });
     // Would redirect to payment gateway
   };
@@ -96,6 +111,7 @@ const Index = () => {
         currentLang={currentLang}
         onLanguageChange={handleLanguageChange}
         logoUrl={logoKpogo}
+        onLogout={handleLogout}
       />
       
       {/* Main Content */}
@@ -103,11 +119,11 @@ const Index = () => {
         {/* Navigation Tabs */}
         <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
         
-        {/* Content Area */}
-        <div className="container mx-auto px-4 py-8">
-          <div className="grid lg:grid-cols-3 gap-8">
+        {/* Content Area - Compact spacing */}
+        <div className="container mx-auto px-4 py-4">
+          <div className="grid lg:grid-cols-3 gap-4">
             {/* Left Column - Main Content */}
-            <div className="lg:col-span-2 space-y-6 stagger-children">
+            <div className="lg:col-span-2 space-y-4 stagger-children">
               {/* Face Manager */}
               <FaceManager />
               
@@ -120,7 +136,7 @@ const Index = () => {
             </div>
             
             {/* Right Column - Sidebar */}
-            <div className="space-y-6 stagger-children">
+            <div className="space-y-4 stagger-children">
               {/* Pricing Card */}
               <PricingCard onPurchase={handlePurchase} />
               
