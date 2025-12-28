@@ -11,8 +11,8 @@ const LoadingScreen = ({ onComplete, logoUrl }: LoadingScreenProps) => {
   const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
-    // Progress animation over 3 seconds
-    const duration = 3000;
+    // Progress animation over 9 seconds (3x slower for majestic effect)
+    const duration = 9000;
     const interval = 50;
     const increment = 100 / (duration / interval);
     
@@ -27,16 +27,16 @@ const LoadingScreen = ({ onComplete, logoUrl }: LoadingScreenProps) => {
       });
     }, interval);
 
-    // Show logo at 50%
+    // Show logo at 50% (4.5 seconds)
     const logoTimer = setTimeout(() => {
       setShowLogo(true);
-    }, 1500);
+    }, 4500);
 
-    // Fade out and complete
+    // Fade out and complete (after 10 seconds total)
     const completeTimer = setTimeout(() => {
       setFadeOut(true);
-      setTimeout(onComplete, 800);
-    }, 3500);
+      setTimeout(onComplete, 1500);
+    }, 10000);
 
     return () => {
       clearInterval(timer);
@@ -105,11 +105,11 @@ const LoadingScreen = ({ onComplete, logoUrl }: LoadingScreenProps) => {
 
         {/* Tagline */}
         <p 
-          className={`text-muted-foreground text-sm md:text-base mt-2 transition-all duration-1000 delay-500 ${
+          className={`text-muted-foreground text-sm md:text-base mt-2 transition-all duration-1500 delay-700 ${
             showLogo ? 'opacity-100' : 'opacity-0'
           }`}
         >
-          Infrastructure IA de Production Élite
+          Golden Identity Forge
         </p>
 
         {/* Progress Bar */}

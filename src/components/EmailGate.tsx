@@ -86,7 +86,7 @@ const EmailGate = ({ onSubmit, logoUrl }: EmailGateProps) => {
 
           {/* Title */}
           <h2 className="font-display text-2xl md:text-3xl font-bold gold-text mb-2">
-            Entrer dans la Forge
+            GOLDEN IDENTITY FORGE
           </h2>
           <p className="text-muted-foreground text-sm mb-8">
             Accédez à l'infrastructure IA la plus avancée
@@ -118,11 +118,11 @@ const EmailGate = ({ onSubmit, logoUrl }: EmailGateProps) => {
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  Vérification...
+                  Validation de la Forge...
                 </>
               ) : (
                 <>
-                  Accéder à KPOGO
+                  ENTRER DANS LA FORGE KPOGO
                   <ArrowRight className="w-5 h-5" />
                 </>
               )}

@@ -498,4 +498,54 @@
       hsl(43 60% 40%) 100%
     );
   }
+
+  /* Vertical Scan Animation for Camera */
+  @keyframes scanVertical {
+    0% {
+      top: 0;
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      top: 100%;
+      opacity: 0;
+    }
+  }
+
+  .animate-scan-vertical {
+    animation: scanVertical 1.5s ease-in-out infinite;
+  }
+
+  /* Majestic fade transitions */
+  .transition-all {
+    transition-duration: 500ms;
+  }
+
+  /* Dashboard entrance animation */
+  .stagger-children > * {
+    opacity: 0;
+    animation: fadeInMajestic 1.5s ease-out forwards;
+  }
+
+  @keyframes fadeInMajestic {
+    from { 
+      opacity: 0; 
+      transform: translateY(20px); 
+    }
+    to { 
+      opacity: 1; 
+      transform: translateY(0); 
+    }
+  }
+
+  .stagger-children > *:nth-child(1) { animation-delay: 0.3s; }
+  .stagger-children > *:nth-child(2) { animation-delay: 0.6s; }
+  .stagger-children > *:nth-child(3) { animation-delay: 0.9s; }
+  .stagger-children > *:nth-child(4) { animation-delay: 1.2s; }
+  .stagger-children > *:nth-child(5) { animation-delay: 1.5s; }
 }

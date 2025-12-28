@@ -1,4 +1,4 @@
-import { Coins } from "lucide-react";
+import { Coins, LogOut } from "lucide-react";
 import LanguageSelector from "./LanguageSelector";
 
 interface HeaderProps {
@@ -6,9 +6,10 @@ interface HeaderProps {
   currentLang: string;
   onLanguageChange: (code: string) => void;
   logoUrl?: string;
+  onLogout?: () => void;
 }
 
-const Header = ({ credits, currentLang, onLanguageChange, logoUrl }: HeaderProps) => {
+const Header = ({ credits, currentLang, onLanguageChange, logoUrl, onLogout }: HeaderProps) => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-border/50">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
@@ -26,8 +27,8 @@ const Header = ({ credits, currentLang, onLanguageChange, logoUrl }: HeaderProps
           </h1>
         </div>
 
-        {/* Right Side: Credits + Language */}
-        <div className="flex items-center gap-4">
+        {/* Right Side: Credits + Language + Logout */}
+        <div className="flex items-center gap-3">
           {/* Credit Counter */}
           <div className="credit-badge pulse-glow">
             <Coins className="w-4 h-4 text-primary" />
@@ -41,6 +42,17 @@ const Header = ({ credits, currentLang, onLanguageChange, logoUrl }: HeaderProps
             currentLang={currentLang} 
             onLanguageChange={onLanguageChange} 
           />
+
+          {/* Logout Button */}
+          {onLogout && (
+            <button
+              onClick={onLogout}
+              className="p-2 rounded-lg bg-muted/50 border border-border/50 hover:border-destructive/50 hover:bg-destructive/10 transition-all group"
+              title="Déconnexion"
+            >
+              <LogOut className="w-4 h-4 text-muted-foreground group-hover:text-destructive transition-colors" />
+            </button>
+          )}
         </div>
       </div>
 
