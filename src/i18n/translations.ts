@@ -989,3 +989,165 @@ export const translations: Record<SupportedLang, Record<TranslationKey, string>>
     "generator.generating": "生成中...",
     "generator.progress": "{progress}%",
     "generator.insufficientCredits": "积分不足，需要 {cost}。",
+    "generator.newCreation": "新创作",
+    "generator.generate": "生成",
+    "generator.generateInProgress": "生成中...",
+
+    "pricing.badge": "单一套餐",
+    "pricing.credits": "8,000 积分",
+    "pricing.approx": "≈ 60 视频或 400 照片",
+    "pricing.cta": "立即购买",
+    "pricing.paymentInfo": "Mobile Money • 银行卡 • 安全支付",
+    "pricing.feature.video": "30 秒 Ultra-HD 视频（133 积分）",
+    "pricing.feature.photos": "真实 HD 照片（20 积分）",
+    "pricing.feature.voice": "精准声音克隆（100 积分）",
+    "pricing.feature.tryOn": "Virtual Try-On（30 积分）",
+    "pricing.feature.posters": "海报与传单 HD（40 积分）",
+    "pricing.feature.ghost": "Ghost 输出 — 零痕迹",
+    "pricing.feature.cameo": "完整 Cameo — 3 张脸",
+
+    "security.antiFraud": "IP 防欺诈",
+    "security.encrypted": "加密数据",
+    "security.ghost": "Ghost 输出 — 零痕迹",
+
+    "face.title": "完整 Cameo",
+    "face.subtitle": "最多保存 3 张脸",
+    "face.rule": "黄金法则：100% 保持身份 — 零变形",
+    "face.slot": "面孔 {n}",
+    "face.uploadSuccess": "照片导入成功",
+    "face.cameraError": "无法访问相机",
+    "face.scanSuccess": "面部扫描成功！",
+    "face.importTooltip": "导入照片",
+    "face.scanTooltip": "扫描我的脸",
+    "face.importLabel": "导入照片",
+    "face.scanLabel": "扫描我的脸",
+    "face.capture": "捕获",
+    "face.scanning": "锻造分析进行中...",
+
+    "notFound.message": "页面未找到",
+    "notFound.back": "返回首页",
+  },
+
+  ja: {
+    "brand.tagline": "GOLDEN IDENTITY FORGE",
+    "header.credits": "クレジット",
+    "header.logout": "ログアウト",
+
+    "emailGate.subtitle": "最先端のAIインフラにアクセス",
+    "emailGate.placeholder": "お仕事用メール",
+    "emailGate.error.required": "メールを入力してください",
+    "emailGate.error.invalid": "無効なメール",
+    "emailGate.button.enter": "KPOGO FORGEに入る",
+    "emailGate.button.validating": "Forge検証中...",
+    "emailGate.privacy.line1": "続行することで利用規約に同意します。",
+    "emailGate.privacy.line2": "データは暗号化され保護されています。",
+
+    "toast.welcome.title": "Golden Identity Forgeへようこそ！",
+    "toast.welcome.desc": "アクセスが有効になりました。",
+    "toast.lang.title": "言語: {lang}",
+    "toast.lang.desc": "インターフェースが更新されました",
+    "toast.logout.title": "ログアウトしました",
+    "toast.logout.desc": "またForgeでお会いしましょう！",
+    "toast.generation.title": "生成完了！",
+    "toast.generation.desc": "{cost}クレジット使用。ファイル準備完了。",
+    "toast.payment.title": "Forge検証中...",
+    "toast.payment.desc": "アクセス確保",
+
+    "spec.title": "技術仕様",
+    "spec.video4k": "30秒 4K Ultra-HD動画",
+    "spec.skin": "リアルな肌テクスチャ",
+    "spec.network": "2G/3G最適化",
+    "spec.continents": "世界対応",
+
+    "footer.line1": "© 2024 KPOGO — エリートAIアイデンティティ基盤",
+    "footer.line2": "KPOGOチーム開発 • 安全な支払い",
+
+    "nav.video": "30秒動画",
+    "nav.photo": "HD写真",
+    "nav.voice": "声クローン",
+    "nav.clothing": "服装",
+    "nav.posters": "ポスター",
+
+    "tab.video.title": "30秒動画ジェネレーター",
+    "tab.video.desc": "あなたの顔で超リアルな30秒動画を作成",
+    "tab.video.placeholder": "シーンを説明...",
+    "tab.video.fileLabel": "参照動画または画像",
+
+    "tab.photo.title": "HD写真ジェネレーター",
+    "tab.photo.desc": "リアルな肌テクスチャの超高解像度写真",
+    "tab.photo.placeholder": "写真を説明...",
+    "tab.photo.fileLabel": "参照画像",
+
+    "tab.voice.title": "声クローン",
+    "tab.voice.desc": "音声サンプルからあなたの声をクローン",
+    "tab.voice.placeholder": "クローン声で話すテキスト...",
+    "tab.voice.fileLabel": "音声サンプル（最低30秒）",
+
+    "tab.clothing.title": "Virtual Try-On",
+    "tab.clothing.desc": "体を変えずに服を変更",
+    "tab.clothing.placeholder": "服装スタイルを説明...",
+    "tab.clothing.fileLabel": "修正する写真",
+
+    "tab.posters.title": "ポスター＆チラシスタジオ",
+    "tab.posters.desc": "プロ仕様のHDマーケティングビジュアルを作成",
+    "tab.posters.placeholder": "ポスターを説明...",
+    "tab.posters.fileLabel": "ベース画像（任意）",
+
+    "generator.credits": "クレジット",
+    "generator.result": "結果",
+    "generator.download": "ダウンロード",
+    "generator.resultAlt": "結果",
+    "generator.outputGhost": "Ghost出力 — ロゴなし、署名なし、メタデータなし",
+    "generator.uploadHint": "ドラッグまたはクリックでアップロード",
+    "generator.generating": "生成中...",
+    "generator.progress": "{progress}%",
+    "generator.insufficientCredits": "クレジット不足。{cost}クレジットが必要です。",
+    "generator.newCreation": "新規作成",
+    "generator.generate": "生成",
+    "generator.generateInProgress": "生成中...",
+
+    "pricing.badge": "シングルパック",
+    "pricing.credits": "8,000クレジット",
+    "pricing.approx": "≈ 60動画または400写真",
+    "pricing.cta": "今すぐ購入",
+    "pricing.paymentInfo": "Mobile Money • カード • 安全な支払い",
+    "pricing.feature.video": "30秒 Ultra-HD動画（133クレジット）",
+    "pricing.feature.photos": "リアルHD写真（20クレジット）",
+    "pricing.feature.voice": "正確な声クローン（100クレジット）",
+    "pricing.feature.tryOn": "Virtual Try-On（30クレジット）",
+    "pricing.feature.posters": "HDポスター＆チラシ（40クレジット）",
+    "pricing.feature.ghost": "Ghost出力 — 痕跡ゼロ",
+    "pricing.feature.cameo": "フルCameo — 3顔",
+
+    "security.antiFraud": "IP不正防止",
+    "security.encrypted": "暗号化データ",
+    "security.ghost": "Ghost出力 — 痕跡ゼロ",
+
+    "face.title": "フルCameo",
+    "face.subtitle": "最大3顔を保存",
+    "face.rule": "ゴールデンルール: 100%アイデンティティ保持 — モーフィングゼロ",
+    "face.slot": "顔 {n}",
+    "face.uploadSuccess": "写真のインポート成功",
+    "face.cameraError": "カメラにアクセスできません",
+    "face.scanSuccess": "顔スキャン成功！",
+    "face.importTooltip": "写真をインポート",
+    "face.scanTooltip": "顔をスキャン",
+    "face.importLabel": "写真をインポート",
+    "face.scanLabel": "顔をスキャン",
+    "face.capture": "キャプチャ",
+    "face.scanning": "Forge分析中...",
+
+    "notFound.message": "ページが見つかりません",
+    "notFound.back": "ホームに戻る",
+  },
+};
+
+export function t(key: TranslationKey, lang: SupportedLang, replacements?: Record<string, string | number>): string {
+  let text = translations[lang]?.[key] ?? translations.en[key] ?? key;
+  if (replacements) {
+    Object.entries(replacements).forEach(([k, v]) => {
+      text = text.replace(`{${k}}`, String(v));
+    });
+  }
+  return text;
+}
