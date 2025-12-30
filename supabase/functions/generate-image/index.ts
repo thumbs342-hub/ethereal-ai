@@ -5,53 +5,86 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// Rate limiting: simple in-memory store
+const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
+const RATE_LIMIT = 10;
+const RATE_WINDOW = 60000;
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const record = rateLimitStore.get(ip);
+  
+  if (!record || now > record.resetTime) {
+    rateLimitStore.set(ip, { count: 1, resetTime: now + RATE_WINDOW });
+    return false;
+  }
+  
+  if (record.count >= RATE_LIMIT) return true;
+  record.count++;
+  return false;
+}
+
+function validatePrompt(prompt: unknown): string {
+  if (typeof prompt !== "string") throw new Error("Prompt must be a string");
+  const trimmed = prompt.trim();
+  if (trimmed.length < 3) throw new Error("Prompt must be at least 3 characters");
+  if (trimmed.length > 1000) throw new Error("Prompt must be less than 1000 characters");
+  return trimmed.replace(/<[^>]*>/g, "").substring(0, 1000);
+}
+
+function validateDimension(value: unknown, defaultVal: number): number {
+  if (value === undefined || value === null) return defaultVal;
+  const num = Number(value);
+  if (isNaN(num)) return defaultVal;
+  return Math.min(Math.max(Math.round(num), 256), 2048);
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { prompt, width = 1024, height = 1024, model = "flux" } = await req.json();
-
-    if (!prompt) {
-      throw new Error("Prompt is required");
+    const clientIP = req.headers.get("x-forwarded-for") || req.headers.get("cf-connecting-ip") || "unknown";
+    if (isRateLimited(clientIP)) {
+      console.warn(`Rate limited: ${clientIP}`);
+      return new Response(
+        JSON.stringify({ error: "Too many requests. Please wait." }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
-    console.log(`Generating image: "${prompt}" (${width}x${height}) with ${model}`);
+    const body = await req.json();
+    const prompt = validatePrompt(body.prompt);
+    const width = validateDimension(body.width, 1024);
+    const height = validateDimension(body.height, 1024);
+    const model = typeof body.model === "string" ? body.model : "flux";
 
-    // Pollinations.ai - Free unlimited API
-    const encodedPrompt = encodeURIComponent(prompt);
-    const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=${width}&height=${height}&model=${model}&nologo=true`;
+    console.log(`Generating: ${prompt.substring(0, 50)}... (${width}x${height})`);
 
-    // Fetch the image to verify it works and get base64
-    const imageResponse = await fetch(imageUrl);
+    const pollinationsUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=${width}&height=${height}&model=${model}&nologo=true`;
+    const imageResponse = await fetch(pollinationsUrl);
     
     if (!imageResponse.ok) {
-      throw new Error(`Image generation failed: ${imageResponse.status}`);
+      throw new Error("Image generation service unavailable");
     }
 
-    const imageBlob = await imageResponse.arrayBuffer();
-    const base64 = btoa(String.fromCharCode(...new Uint8Array(imageBlob)));
-    const contentType = imageResponse.headers.get("content-type") || "image/jpeg";
+    const imageBuffer = await imageResponse.arrayBuffer();
+    const base64 = btoa(String.fromCharCode(...new Uint8Array(imageBuffer)));
+    const mimeType = imageResponse.headers.get("content-type") || "image/webp";
 
-    console.log(`Image generated successfully, size: ${imageBlob.byteLength} bytes`);
+    console.log(`Generated: ${base64.length} bytes`);
 
     return new Response(
-      JSON.stringify({
-        success: true,
-        image: `data:${contentType};base64,${base64}`,
-        url: imageUrl,
-        prompt,
-        dimensions: { width, height },
-      }),
+      JSON.stringify({ image: `data:${mimeType};base64,${base64}`, format: "webp" }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    console.error("Generation error:", error);
+    const errorMessage = error instanceof Error ? error.message : "Generation failed";
+    console.error("Error:", errorMessage);
     return new Response(
-      JSON.stringify({ success: false, error: errorMessage }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      JSON.stringify({ error: errorMessage }),
+      { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 });

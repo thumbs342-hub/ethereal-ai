@@ -6,20 +6,38 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// Secret token for cron job authentication
+const CLEANUP_SECRET = Deno.env.get("CLEANUP_SECRET") || "default-cleanup-secret";
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    // Verify authorization - only service role or cron can call this
+    const authHeader = req.headers.get("authorization");
+    const cleanupToken = req.headers.get("x-cleanup-token");
+    
+    // Check if called by service role or with cleanup token
+    const isServiceRole = authHeader?.includes(Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "");
+    const isValidToken = cleanupToken === CLEANUP_SECRET;
+    
+    if (!isServiceRole && !isValidToken) {
+      console.warn("Unauthorized cleanup attempt");
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Get files older than 24 hours
+    // Ghost mode: delete files older than 24 hours
     const cutoffTime = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-
-    console.log(`Cleaning up files older than: ${cutoffTime}`);
+    console.log(`[GHOST MODE] Cleaning files older than: ${cutoffTime}`);
 
     // List all files in forge-results bucket
     const { data: files, error: listError } = await supabase.storage
@@ -53,9 +71,9 @@ serve(async (req) => {
       );
     }
 
-    // Delete old files
+    // Delete old files - Ghost mode active
     const filesToDelete = oldFiles.map((f) => f.name);
-    console.log(`Deleting ${filesToDelete.length} files:`, filesToDelete);
+    console.log(`[GHOST] Deleting ${filesToDelete.length} expired files`);
 
     const { error: deleteError } = await supabase.storage
       .from("forge-results")
@@ -66,13 +84,13 @@ serve(async (req) => {
       throw deleteError;
     }
 
-    console.log(`Successfully deleted ${filesToDelete.length} files`);
+    console.log(`[GHOST] Successfully deleted ${filesToDelete.length} files - Zero trace mode active`);
 
     return new Response(
       JSON.stringify({
-        message: "Cleanup completed",
+        message: "Ghost cleanup completed",
         deleted: filesToDelete.length,
-        files: filesToDelete,
+        mode: "zero-trace"
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
