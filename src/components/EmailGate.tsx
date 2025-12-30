@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Mail, ArrowRight, Loader2 } from "lucide-react";
+import { useSupabaseUser } from "@/hooks/useSupabaseUser";
 
 interface EmailGateProps {
   onSubmit: (email: string) => void;
@@ -10,6 +11,7 @@ const EmailGate = ({ onSubmit, logoUrl }: EmailGateProps) => {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const { saveUser } = useSupabaseUser();
 
   const validateEmail = (email: string) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -31,17 +33,12 @@ const EmailGate = ({ onSubmit, logoUrl }: EmailGateProps) => {
 
     setIsSubmitting(true);
     
-    // Simulate API call to save email
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Save to Supabase
+    const success = await saveUser({ email });
     
-    // Store in localStorage for now (would be database in production)
-    const visitors = JSON.parse(localStorage.getItem('kpogo_visitors') || '[]');
-    visitors.push({
-      email,
-      timestamp: new Date().toISOString(),
-      userAgent: navigator.userAgent,
-    });
-    localStorage.setItem('kpogo_visitors', JSON.stringify(visitors));
+    if (!success) {
+      console.warn("Failed to save to Supabase, continuing anyway");
+    }
 
     setIsSubmitting(false);
     onSubmit(email);
