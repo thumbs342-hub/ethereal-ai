@@ -1,7 +1,7 @@
-import { Video, Image, Mic, Shirt, FileImage } from "lucide-react";
+import { Image, Mic, Shirt, FileImage } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export type TabType = "video" | "photo" | "voice" | "clothing" | "posters";
+export type TabType = "photo" | "voice" | "clothing" | "posters";
 
 interface NavigationProps {
   activeTab: TabType;
@@ -9,7 +9,6 @@ interface NavigationProps {
 }
 
 const tabs = [
-  { id: "video" as TabType, label: "Vidéo 30s", icon: Video, cost: 133 },
   { id: "photo" as TabType, label: "Photo HD", icon: Image, cost: 20 },
   { id: "voice" as TabType, label: "Clonage Vocal", icon: Mic, cost: 100 },
   { id: "clothing" as TabType, label: "Look/Vêtements", icon: Shirt, cost: 30 },

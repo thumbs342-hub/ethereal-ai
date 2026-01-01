@@ -1,17 +1,33 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Mail, ArrowRight, Loader2 } from "lucide-react";
 import { useSupabaseUser } from "@/hooks/useSupabaseUser";
+import LoginLanguageSelector from "./LoginLanguageSelector";
+
+const STORAGE_LANG_KEY = "kpogo_lang";
 
 interface EmailGateProps {
   onSubmit: (email: string) => void;
   logoUrl?: string;
+  onLanguageChange?: (code: string) => void;
 }
 
-const EmailGate = ({ onSubmit, logoUrl }: EmailGateProps) => {
+const EmailGate = ({ onSubmit, logoUrl, onLanguageChange }: EmailGateProps) => {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [currentLang, setCurrentLang] = useState("fr");
   const { saveUser } = useSupabaseUser();
+
+  useEffect(() => {
+    const stored = localStorage.getItem(STORAGE_LANG_KEY);
+    if (stored) setCurrentLang(stored);
+  }, []);
+
+  const handleLanguageChange = (code: string) => {
+    setCurrentLang(code);
+    localStorage.setItem(STORAGE_LANG_KEY, code);
+    onLanguageChange?.(code);
+  };
 
   const validateEmail = (email: string) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -88,6 +104,14 @@ const EmailGate = ({ onSubmit, logoUrl }: EmailGateProps) => {
           <p className="text-muted-foreground text-sm mb-8">
             Accédez à l'infrastructure IA la plus avancée
           </p>
+
+          {/* Language Selector */}
+          <div className="mb-6">
+            <LoginLanguageSelector 
+              currentLang={currentLang} 
+              onLanguageChange={handleLanguageChange} 
+            />
+          </div>
 
           {/* Email Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
