@@ -14,7 +14,7 @@ const Header = ({ credits, currentLang, onLanguageChange, logoUrl, onLogout }: H
     <header className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-border/50">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 shrink-0">
           {logoUrl ? (
             <img src={logoUrl} alt="KPOGO" className="w-10 h-10 object-contain" />
           ) : (
@@ -22,18 +22,18 @@ const Header = ({ credits, currentLang, onLanguageChange, logoUrl, onLogout }: H
               <span className="font-display font-bold text-lg text-primary-foreground">K</span>
             </div>
           )}
-          <h1 className="font-display text-xl font-semibold gold-text tracking-wide">
+          <h1 className="font-display text-xl font-semibold gold-text tracking-wide hidden sm:block">
             KPOGO
           </h1>
         </div>
 
         {/* Right Side: Credits + Language + Logout */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 ml-4">
           {/* Credit Counter */}
-          <div className="credit-badge pulse-glow">
-            <Coins className="w-4 h-4 text-primary" />
-            <span className="gold-text font-semibold">
-              {credits.toLocaleString('fr-FR')} Crédits
+          <div className="credit-badge pulse-glow whitespace-nowrap">
+            <Coins className="w-4 h-4 text-primary shrink-0" />
+            <span className="gold-text font-semibold text-sm sm:text-base">
+              {credits.toLocaleString('fr-FR')}
             </span>
           </div>
 

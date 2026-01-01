@@ -14,7 +14,7 @@ import logoKpogo from "@/assets/logo_kpogo.png";
 
 const Index = () => {
   const [credits, setCredits] = useState(8000);
-  const [activeTab, setActiveTab] = useState<TabType>("video");
+  const [activeTab, setActiveTab] = useState<TabType>("photo");
   const [currentLang, setCurrentLang] = useState("fr");
   
   // App states
@@ -89,7 +89,7 @@ const Index = () => {
 
   // Email Gate
   if (showEmailGate) {
-    return <EmailGate onSubmit={handleEmailSubmit} logoUrl={logoKpogo} />;
+    return <EmailGate onSubmit={handleEmailSubmit} logoUrl={logoKpogo} onLanguageChange={handleLanguageChange} />;
   }
 
   return (
