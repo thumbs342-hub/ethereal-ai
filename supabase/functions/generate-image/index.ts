@@ -10,6 +10,10 @@ const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
 const RATE_LIMIT = 10;
 const RATE_WINDOW = 60000;
 
+function generateRequestId(): string {
+  return `req_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+}
+
 function isRateLimited(ip: string): boolean {
   const now = Date.now();
   const record = rateLimitStore.get(ip);
@@ -25,10 +29,10 @@ function isRateLimited(ip: string): boolean {
 }
 
 function validatePrompt(prompt: unknown): string {
-  if (typeof prompt !== "string") throw new Error("Prompt must be a string");
+  if (typeof prompt !== "string") throw new Error("INVALID_PROMPT");
   const trimmed = prompt.trim();
-  if (trimmed.length < 3) throw new Error("Prompt must be at least 3 characters");
-  if (trimmed.length > 1000) throw new Error("Prompt must be less than 1000 characters");
+  if (trimmed.length < 3) throw new Error("PROMPT_TOO_SHORT");
+  if (trimmed.length > 1000) throw new Error("PROMPT_TOO_LONG");
   return trimmed.replace(/<[^>]*>/g, "").substring(0, 1000);
 }
 
@@ -39,17 +43,32 @@ function validateDimension(value: unknown, defaultVal: number): number {
   return Math.min(Math.max(Math.round(num), 256), 2048);
 }
 
+// Map internal errors to user-friendly messages
+function getUserFriendlyError(errorCode: string): string {
+  const errorMap: Record<string, string> = {
+    "INVALID_PROMPT": "Please provide a valid prompt",
+    "PROMPT_TOO_SHORT": "Prompt must be at least 3 characters",
+    "PROMPT_TOO_LONG": "Prompt is too long",
+    "SERVICE_UNAVAILABLE": "Service temporarily unavailable. Please try again.",
+    "RATE_LIMITED": "Too many requests. Please wait a moment.",
+  };
+  return errorMap[errorCode] || "An error occurred. Please try again.";
+}
+
 serve(async (req) => {
+  const requestId = generateRequestId();
+  
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
     const clientIP = req.headers.get("x-forwarded-for") || req.headers.get("cf-connecting-ip") || "unknown";
+    
     if (isRateLimited(clientIP)) {
-      console.warn(`Rate limited: ${clientIP}`);
+      console.warn(`[${requestId}] Rate limited: ${clientIP}`);
       return new Response(
-        JSON.stringify({ error: "Too many requests. Please wait." }),
+        JSON.stringify({ error: getUserFriendlyError("RATE_LIMITED"), requestId }),
         { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -60,30 +79,35 @@ serve(async (req) => {
     const height = validateDimension(body.height, 1024);
     const model = typeof body.model === "string" ? body.model : "flux";
 
-    console.log(`Generating: ${prompt.substring(0, 50)}... (${width}x${height})`);
+    console.log(`[${requestId}] Generating: ${prompt.substring(0, 50)}... (${width}x${height})`);
 
     const pollinationsUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=${width}&height=${height}&model=${model}&nologo=true`;
     const imageResponse = await fetch(pollinationsUrl);
     
     if (!imageResponse.ok) {
-      throw new Error("Image generation service unavailable");
+      console.error(`[${requestId}] Pollinations API error: ${imageResponse.status}`);
+      throw new Error("SERVICE_UNAVAILABLE");
     }
 
     const imageBuffer = await imageResponse.arrayBuffer();
     const base64 = btoa(String.fromCharCode(...new Uint8Array(imageBuffer)));
     const mimeType = imageResponse.headers.get("content-type") || "image/webp";
 
-    console.log(`Generated: ${base64.length} bytes`);
+    console.log(`[${requestId}] Generated successfully: ${base64.length} bytes`);
 
     return new Response(
       JSON.stringify({ image: `data:${mimeType};base64,${base64}`, format: "webp" }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : "Generation failed";
-    console.error("Error:", errorMessage);
+    const errorCode = error instanceof Error ? error.message : "UNKNOWN";
+    console.error(`[${requestId}] Error:`, errorCode);
+    
     return new Response(
-      JSON.stringify({ error: errorMessage }),
+      JSON.stringify({ 
+        error: getUserFriendlyError(errorCode), 
+        requestId 
+      }),
       { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
