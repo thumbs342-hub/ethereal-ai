@@ -8,6 +8,7 @@ import SecurityBanner from "@/components/SecurityBanner";
 import LoadingScreen from "@/components/LoadingScreen";
 import EmailGate from "@/components/EmailGate";
 import PartnerMarquee from "@/components/PartnerMarquee";
+import { CreativeStudio } from "@/components/canvas";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import logoKpogo from "@/assets/logo_kpogo.png";
@@ -127,12 +128,16 @@ const Index = () => {
               {/* Face Manager */}
               <FaceManager />
               
-              {/* Generator Panel */}
-              <GeneratorPanel 
-                activeTab={activeTab}
-                credits={credits}
-                onGenerate={handleGenerate}
-              />
+              {/* Creative Studio for posters tab */}
+              {activeTab === "posters" ? (
+                <CreativeStudio />
+              ) : (
+                <GeneratorPanel 
+                  activeTab={activeTab}
+                  credits={credits}
+                  onGenerate={handleGenerate}
+                />
+              )}
             </div>
             
             {/* Right Column - Sidebar */}
